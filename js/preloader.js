@@ -20,6 +20,7 @@ Jumpup.Preloader.prototype = {
         this.load.setPreloadSprite(this.preloadBar);
         this.load.image('background', 'assets/Full-Background.png');
         //this.load.audio('levelup', 'assets/243020__plasterbrain__game-start.ogg');
+        this.load.image('key', 'assets/key.png');
 
         //  Note: Graphics are Copyright 2015 Photon Storm Ltd.
             //  Load the Google WebFont Loader script
