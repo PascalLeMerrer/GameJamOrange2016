@@ -113,6 +113,12 @@ Jumpup.Game.prototype = {
         }, null, this);
 
 
+        var emitter = this.emitter;
+        emitter.forEachAlive(function(p){       
+            if(emitter.lifespan && emitter.alive){
+                p.alpha = p.lifespan / emitter.lifespan; 
+            }
+        });
 
     },
 
@@ -154,7 +160,8 @@ Jumpup.Game.prototype = {
         var fadeTween = this.game.add.tween(popup).to( { alpha: 0 }, 1500, null, true);
         this.emitter.x = x;
         this.emitter.y = y;
-        this.emitter.start(true, 500, null, 15);
+        this.emitter.start(true, 1000, null, 25);
+
         console.log(this.emitter);
 
         fadeTween.onCompleteCallback = function(){
