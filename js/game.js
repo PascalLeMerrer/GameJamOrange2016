@@ -105,6 +105,37 @@ Jumpup.Game.prototype = {
 
     end: function(){
         this.state.start('LevelFinished', true, false, this.context);
+    },
+
+    displaySuccessMessage: function(x, y, level){
+        var style = {
+            font: "32px Arial", fill: "#ff6600",
+            align: "center"
+        };
+        var messageTxt = "Ok";
+        switch(level){
+            case 0:
+                messageTxt = "Ok";
+                break;
+            case 1:
+                messageTxt = "Bien joué";
+                break;
+            case 2:
+                messageTxt = "Super";
+                break;
+            case 3:
+                messageTxt = "Excellent";
+                break;
+            case 4:
+                messageTxt = "Génialissime";
+                break;
+        }
+        var message = this.add.text(x, y, messageTxt, style)
+        var fadeTween = this.game.add.tween(message).to( { alpha: 0 }, 1500, null, true);
+        fadeTween.onCompleteCallback = function(){
+            message.kill();
+        }
+
     }
 
 };
