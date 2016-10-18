@@ -4,11 +4,14 @@ Jumpup.Game = function () {
 
     this.keys = null;
 
+    this.emitter = null;
+
     // Ground sprite
     this.ground = null;
 
     this.context = null;
     this.scoreText = null;
+
 };
 
 var gameConfig = {
@@ -22,6 +25,8 @@ Jumpup.Game.prototype = {
     // Assets loading - do not use asssets here
     preload: function () {
         this.load.image("key", "assets/key.png")
+        this.load.image("dialog", "assets/dialog.png")
+        this.load.image("explosion", "assets/Explosion.png")
     },
 
     init: function (context) {
@@ -67,6 +72,10 @@ Jumpup.Game.prototype = {
         this.ground.body.immovable = true
 
         this.initKeyboard();
+
+        // Particle effect
+        this.emitter = game.add.emitter(0, 0, 100);
+        this.emitter.makeParticles('explosion');
     },
 
     initKeyboard: function() {
@@ -114,6 +123,12 @@ Jumpup.Game.prototype = {
             return true;
         }, null, this);
 
+        var emitter = this.emitter;
+        emitter.forEachAlive(function(p){       
+            if(emitter.lifespan && emitter.alive){
+                p.alpha = p.lifespan / emitter.lifespan; 
+            }
+        });
     },
 
     end: function(){
@@ -121,10 +136,6 @@ Jumpup.Game.prototype = {
     },
 
     displaySuccessMessage: function(x, y, level){
-        var style = {
-            font: "32px Arial", fill: "#ff6600",
-            align: "center"
-        };
         var messageTxt = "Ok";
         switch(level){
             case 0:
@@ -143,13 +154,30 @@ Jumpup.Game.prototype = {
                 messageTxt = "Génialissime";
                 break;
         }
-        var message = this.add.text(x, y, messageTxt, style)
-        if (message.x + message.width > gameConfig.width) {
-            message.x = gameConfig.width - message.width;
+
+        var popup = this.add.sprite(x, y, "dialog");
+        if (popup.x + popup.width > gameConfig.width) {
+            popup.x = gameConfig.width - popup.width;
         }
+        var style = {
+            font: "25px Arial", fill: "#ffffff",
+            wordWrap: true, wordWrapWidth: popup.width,
+            align: "center", 
+        };
+
+        var text = this.make.text(popup.width / 2, popup.height / 2, messageTxt, style);
+        text.anchor.set(0.5);
+
+        var message = popup.addChild(text);
+
+        var fadeTween = this.game.add.tween(popup).to( { alpha: 0 }, 1500, null, true);
+        this.emitter.x = x;
+        this.emitter.y = y;
+        this.emitter.start(true, 1000, null, 25);
+
         var fadeTween = this.game.add.tween(message).to( { alpha: 0 }, 1500, null, true);
         fadeTween.onCompleteCallback = function(){
-            message.kill();
+            popup.kill();
         }
 
     }
@@ -226,5 +254,6 @@ Key.prototype.grounded = function(){
     if(this.alive){
         this.alive = false;
         this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
+        this.game.displaySuccessMessage(this.sprite.x + this.sprite.width, this.sprite.y, 4);
     }
 }
