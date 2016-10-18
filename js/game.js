@@ -27,6 +27,7 @@ Jumpup.Game.prototype = {
     create: function () {
         // this.physics.arcade.enable(this.player);
 
+        this.background = this.add.tileSprite(0, 0, 800, 600, 'background');
         var style = { fill: "#ffffff", align: "center", fontSize: 32 };
 
         this.scoreText = this.createText(20, 20, this.context.score || '000', style);
