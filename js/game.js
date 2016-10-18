@@ -4,11 +4,14 @@ Jumpup.Game = function () {
 
     this.keys = null;
 
+    this.emitter = null;
+
     // Ground sprite
     this.ground = null;
 
     this.context = null;
     this.scoreText = null;
+
 };
 
 var gameConfig = {
@@ -21,6 +24,8 @@ Jumpup.Game.prototype = {
     // Assets loading - do not use asssets here
     preload: function () {
         this.load.image("key", "assets/key.png")
+        this.load.image("dialog", "assets/dialog.png")
+        this.load.image("explosion", "assets/Explosion.png")
     },
 
     init: function (context) {
@@ -63,6 +68,10 @@ Jumpup.Game.prototype = {
         this.ground.body.immovable = true
 
         this.initKeyboard();
+
+        // Particle effect
+        this.emitter = game.add.emitter(0, 0, 100);
+        this.emitter.makeParticles('explosion');
     },
 
     initKeyboard: function() {
@@ -112,10 +121,6 @@ Jumpup.Game.prototype = {
     },
 
     displaySuccessMessage: function(x, y, level){
-        var style = {
-            font: "32px Arial", fill: "#ff6600",
-            align: "center"
-        };
         var messageTxt = "Ok";
         switch(level){
             case 0:
@@ -134,10 +139,26 @@ Jumpup.Game.prototype = {
                 messageTxt = "Génialissime";
                 break;
         }
-        var message = this.add.text(x, y, messageTxt, style)
-        var fadeTween = this.game.add.tween(message).to( { alpha: 0 }, 1500, null, true);
+        var popup = this.add.sprite(x, y, "dialog");
+        var style = {
+            font: "25px Arial", fill: "#ffffff",
+            wordWrap: true, wordWrapWidth: popup.width,
+            align: "center", 
+        };
+
+        var text = this.make.text(popup.width / 2, popup.height / 2, messageTxt, style);
+        text.anchor.set(0.5);
+
+        var message = popup.addChild(text);
+
+        var fadeTween = this.game.add.tween(popup).to( { alpha: 0 }, 1500, null, true);
+        this.emitter.x = x;
+        this.emitter.y = y;
+        this.emitter.start(true, 500, null, 15);
+        console.log(this.emitter);
+
         fadeTween.onCompleteCallback = function(){
-            message.kill();
+            popup.kill();
         }
 
     }
@@ -187,5 +208,6 @@ Key.prototype.grounded = function(){
         this.alive = false;
         console.log("Letter "+this.keyLetter+" has hit the bottom");
         this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
+        this.game.displaySuccessMessage(this.sprite.x + this.sprite.width, this.sprite.y, 4);
     }
 }
