@@ -11,6 +11,12 @@ Jumpup.Game = function () {
     this.scoreText = null;
 };
 
+var gameConfig = {
+  width: 800,
+  height: 600,
+  keysize: 50
+}
+
 Jumpup.Game.prototype = {
     // Assets loading - do not use asssets here
     preload: function () {
@@ -23,7 +29,7 @@ Jumpup.Game.prototype = {
 
         this.game.renderer.renderSession.roundPixels = true;
 
-        this.world.resize(800, 600);
+        this.world.resize(gameConfig.width, gameConfig.height);
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -37,7 +43,7 @@ Jumpup.Game.prototype = {
     create: function () {
         // this.physics.arcade.enable(this.player);
 
-        this.background = this.add.tileSprite(0, 0, 800, 600, 'background');
+        this.background = this.add.tileSprite(0, 0, gameConfig.width, gameConfig.height, 'background');
         var style = { fill: "#ffffff", align: "center", fontSize: 32 };
 
         this.scoreText = this.createText(20, 20, this.context.score || '000', style);
@@ -49,16 +55,13 @@ Jumpup.Game.prototype = {
         this.keys.enableBody = true;
         this.keys.physicsBodyType = Phaser.Physics.ARCADE;
 
-       // Sample key
-        var k = new Key(this, 110, 10, "k");
-        var b = new Key(this, 140, 70, "b");
-
-        this.keys.add(k.sprite);
-        this.keys.add(b.sprite);
+       addKeySprite(this);
+       addKeySprite(this);
+       addKeySprite(this);
 
         // Ground
         this.ground = this.add.sprite(0, 518, "");
-        this.ground.width = 800;
+        this.ground.width = gameConfig.width;
         this.physics.enable(this.ground, Phaser.Physics.ARCADE);
         this.ground.body.immovable = true
     },
@@ -93,6 +96,14 @@ Jumpup.Game.prototype = {
 
 };
 
+function addKeySprite(game) {
+   var rand = function(upto) { return game.rnd.integerInRange(0, upto-1); }
+   var randx = rand(gameConfig.width-gameConfig.keysize);
+   var keys="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+   var randc = rand(keys.length);
+   var key = new Key(game, randx, 10, keys[randc]);
+   game.keys.add(key.sprite);
+}
 
 function Key(game, x, y, keyLetter){
     var keyLetter = keyLetter;
