@@ -28,14 +28,14 @@ Jumpup.Game.prototype = {
 
         this.context = context;
 
+        this.playgroundHeight = 518;
+
         this.game.renderer.renderSession.roundPixels = true;
 
         this.world.resize(gameConfig.width, gameConfig.height);
 
-
         this.physics.startSystem(Phaser.Physics.ARCADE);
 
-        this.physics.arcade.gravity.y = 750;
         this.physics.arcade.skipQuadTree = false;
     },
 
@@ -43,9 +43,10 @@ Jumpup.Game.prototype = {
         // this.physics.arcade.enable(this.player);
 
         this.background = this.add.tileSprite(0, 0, gameConfig.width, gameConfig.height, 'background');
+
         var style = { fill: "#ffffff", align: "center", fontSize: 32 };
 
-        this.scoreText = this.createText(20, 20, this.context.score || '000', style);
+        this.scoreText = this.createText(20, 80, this.context.score || '000', style);
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -58,10 +59,9 @@ Jumpup.Game.prototype = {
           game.time.events.add(delay, function() { addKeySprite(game) ; arm(delay)}, game);
         }
         arm(500)
-        
 
         // Ground
-        this.ground = this.add.sprite(0, 518, "");
+        this.ground = this.add.sprite(0, this.playgroundHeight, "");
         this.ground.width = gameConfig.width;
         this.physics.enable(this.ground, Phaser.Physics.ARCADE);
         this.ground.body.immovable = true
@@ -77,6 +77,9 @@ Jumpup.Game.prototype = {
         this.sound.play('key');
         this.keys.forEachAlive(function(key) {
             if(key.key.keyLetter.toLowerCase() === char.toLowerCase()) {
+                points = 50 - Math.round((key.y / this.playgroundHeight) * 5) * 10;
+                this.context.score += points;
+                this.scoreText.setText(this.context.score);
                 key.kill();
             }
         }, this)
@@ -106,8 +109,6 @@ Jumpup.Game.prototype = {
             key.key.grounded();
             return true;
         }, null, this);
-
-
 
     },
 
@@ -173,7 +174,6 @@ function addKeySprite(game) {
 function Key(game, x, y, keyLetter){
     this.game = game;
     this.keyLetter = keyLetter;
-
     // Background sprite
     this.sprite = game.add.sprite(x, y, 'key');
     this.sprite.width = 50;
@@ -194,15 +194,15 @@ function Key(game, x, y, keyLetter){
 
     // Background physics body
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-    this.sprite.body.gravity.y = 100;
+    this.sprite.body.gravity.y = 5;
     this.sprite.body.collideWorldBounds = true;
     this.sprite.body.setSize(44, 44, 3, 3)
 }
 
+// invoked when the key hits the ground
 Key.prototype.grounded = function(){
     if(this.alive){
         this.alive = false;
-        console.log("Letter "+this.keyLetter+" has hit the bottom");
         this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
     }
 }
