@@ -26,16 +26,16 @@ Jumpup.MainMenu.prototype = {
                                        60);
 
         this.instructions = this.createText(this.camera.view.width / 2,
-                                            this.camera.view.height * 0.75,
+                                            this.camera.view.height * 0.5,
                                             45);
 
         this.startText.setText('');
-        this.instructions.setText("Press Enter to start");
+        this.instructions.setText("Appuyer sur entrée\npour commencer");
 
     },
 
     createText: function (x, y, fontSize) {
-        var style = { fill: "#ffffff", align: "center" };
+        var style = { fill: "#65CE40", align: "center" };
         var text = this.add.text(x, y, '', style);
         text.font = "Roboto Slab";
         text.fontSize = fontSize;
