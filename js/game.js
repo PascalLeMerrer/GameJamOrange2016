@@ -86,23 +86,25 @@ Jumpup.Game.prototype = {
     },
 
     initKeyboard: function() {
-        game.input.keyboard.addCallbacks(this, null, null, this.onPress);
+        game.input.keyboard.addCallbacks(this, this.onDown);
     },
 
-    onPress: function(char) {
+    onDown: function(keyboardEvent) {
+        console.log(keyboardEvent);
+        var char = keyboardEvent.key;
         this.sound.play('key');
         keyCount = this.keys.children.length;
         for (var i = 0; i < keyCount; i++) {
             var keySprite = this.keys.children[i];
             if (keySprite.key.alive &&
-                (keySprite.key.keyLetter.toLowerCase() === char.toLowerCase())) {
+                (keySprite.key.keyLetter.toLowerCase() === char)) {
                 var level = 5 - Math.round((keySprite.y / this.playgroundHeight) * 5)
                 points = level * 10;
                 this.context.score += points;
                 this.scoreText.setText(this.context.score);
                 this.displaySuccessMessage(keySprite.x, keySprite.y, level)
                 keySprite.kill();
-                // this.keys.remove(keySprite);
+                this.keys.remove(keySprite);
                 keySprite = null;
                 this.average *= 0.7;
                 this.average += level * 0.3;
