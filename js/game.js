@@ -250,6 +250,5 @@ Key.prototype.grounded = function(){
     if(this.alive){
         this.alive = false;
         this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
-        this.game.displaySuccessMessage(this.sprite.x + this.sprite.width, this.sprite.y, 4);
     }
 }
