@@ -86,7 +86,8 @@ Jumpup.Game.prototype = {
         this.sound.play('key');
         this.keys.forEachAlive(function(key) {
             if(key.key.keyLetter.toLowerCase() === char.toLowerCase()) {
-                var level = 5 - Math.round((key.y / this.playgroundHeight) * 5)
+                var level = 5 - Math.floor((key.y / this.playgroundHeight) * 5)
+                //console.log("level="+level+" char="+key.key.keyLetter+" height="+this.playgroundHeight+" key.y="+key.y)
                 points = level * 10;
                 this.context.score += points;
                 this.scoreText.setText(this.context.score);
@@ -138,19 +139,19 @@ Jumpup.Game.prototype = {
     displaySuccessMessage: function(x, y, level){
         var messageTxt = "Ok";
         switch(level){
-            case 0:
+            case 1:
                 messageTxt = "Ok";
                 break;
-            case 1:
+            case 2:
                 messageTxt = "Bien joué";
                 break;
-            case 2:
+            case 3:
                 messageTxt = "Super";
                 break;
-            case 3:
+            case 4:
                 messageTxt = "Excellent";
                 break;
-            case 4:
+            case 5:
                 messageTxt = "Génialissime";
                 break;
         }
@@ -239,7 +240,7 @@ function Key(game, x, y, keyLetter){
         wordWrap: true, wordWrapWidth: this.sprite.width,
         align: "center"
     };
-    this.letterText = this.sprite.addChild(game.make.text(this.sprite.width / 2, this.sprite.height / 2, keyLetter, style));
+    this.letterText = this.sprite.addChild(game.make.text(30, 25, keyLetter, style));
     this.letterText.anchor.set(0.5);
 
     // Background physics body
@@ -254,5 +255,6 @@ Key.prototype.grounded = function(){
     if(this.alive){
         this.alive = false;
         this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
+        this.game.displaySuccessMessage(this.sprite.x + this.sprite.width, this.sprite.y, 4);
     }
 }
