@@ -34,7 +34,6 @@ Jumpup.Game.prototype = {
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
 
-        this.physics.arcade.gravity.y = 750;
         this.physics.arcade.skipQuadTree = false;
     },
 
@@ -146,15 +145,15 @@ function Key(game, x, y, keyLetter){
 
     // Background physics body
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-    this.sprite.body.gravity.y = 100;
+    this.sprite.body.gravity.y = 5;
     this.sprite.body.collideWorldBounds = true;
     this.sprite.body.setSize(44, 44, 3, 3)
 }
 
+// invoked when the key hits the ground
 Key.prototype.grounded = function(){
     if(this.alive){
         this.alive = false;
-        console.log("Letter "+this.keyLetter+" has hit the bottom");
         this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
     }
 }
