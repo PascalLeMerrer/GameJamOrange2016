@@ -75,22 +75,25 @@ Jumpup.Game.prototype = {
 
     onPress: function(char) {
         this.sound.play('key');
-        this.keys.forEachAlive(function(key) {
-            if(key.key.keyLetter.toLowerCase() === char.toLowerCase()) {
+        keyCount = this.keys.children.length;
+        for (var i = 0; i < keyCount; i++) {
+            var key = this.keys.children[i];
+            if (key.key.alive &&
+                (key.key.keyLetter.toLowerCase() === char.toLowerCase())) {
                 var level = 5 - Math.round((key.y / this.playgroundHeight) * 5)
                 points = level * 10;
                 this.context.score += points;
                 this.scoreText.setText(this.context.score);
                 this.displaySuccessMessage(key.x, key.y, level)
                 key.kill();
-
-
+                this.average *= 0.7;
+                this.average += level * 0.3;
+                this.gravity = 4 + 10 * this.average;
             }
-        }, this)
+        }
     },
 
-    createText: function(x, y, text, style, size)
-    {
+    createText: function(x, y, text, style, size) {
         var textObject = this.add.text(x, y, text, style);
         textObject.font = "Roboto Slab";
         textObject.fixedToCamera = true;
