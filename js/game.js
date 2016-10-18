@@ -71,7 +71,11 @@ Jumpup.Game.prototype = {
 
     onPress: function(char) {
         this.sound.play('key');
-        console.log(char);
+        this.keys.forEachAlive(function(key) {
+            if(key.key.keyLetter.toLowerCase() === char.toLowerCase()) {
+                key.kill();
+            }
+        }, this)
     },
 
     createText: function(x, y, text, style, size)
@@ -129,7 +133,7 @@ function Key(game, x, y, keyLetter){
 
     this.sprite.key = this;
 
-    this.outOfGame = false;
+    this.alive = true;
 
     // Letter
     var style = {
@@ -148,8 +152,8 @@ function Key(game, x, y, keyLetter){
 }
 
 Key.prototype.grounded = function(){
-    if(!this.outOfGame){
-        this.outOfGame = true;
+    if(this.alive){
+        this.alive = false;
         console.log("Letter "+this.keyLetter+" has hit the bottom");
         this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
     }
