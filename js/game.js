@@ -15,7 +15,7 @@ Jumpup.Game.prototype = {
 
         this.game.renderer.renderSession.roundPixels = true;
 
-        this.world.resize(640, 2000);
+        this.world.resize(800, 600);
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -25,7 +25,7 @@ Jumpup.Game.prototype = {
     },
 
     create: function () {
-        this.physics.arcade.enable(this.player);
+        // this.physics.arcade.enable(this.player);
 
         var style = { fill: "#ffffff", align: "center", fontSize: 32 };
 

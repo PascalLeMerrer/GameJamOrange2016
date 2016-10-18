@@ -18,7 +18,7 @@ Jumpup.LevelFinished.prototype = {
 
     create: function () {
 
-        this.sky = this.add.tileSprite(0, 0, 640, 480, 'clouds');
+        this.sky = this.add.tileSprite(0, 0, 800, 600, 'background');
 
         this.endText = this.createText(this.camera.view.width / 2,
                                        this.camera.view.height / 2,

@@ -20,6 +20,7 @@ Jumpup.Preloader.prototype = {
         this.preloadBar = this.add.sprite(120, 260, 'preload');
         this.load.setPreloadSprite(this.preloadBar);
         //this.load.image('trees', 'assets/trees.png');
+        this.load.image('background', 'assets/Full-Background.png');
         //this.load.audio('levelup', 'assets/243020__plasterbrain__game-start.ogg');
 
         //  Note: Graphics are Copyright 2015 Photon Storm Ltd.

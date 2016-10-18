@@ -19,7 +19,7 @@ Jumpup.MainMenu.prototype = {
     create: function () {
         this.stage.backgroundColor = '#2f9acc';
 
-        this.sky = this.add.tileSprite(0, 0, 640, 480, 'clouds');
+        this.sky = this.add.tileSprite(0, 0, 800, 600, 'background');
 
         this.startText = this.createText(this.camera.view.width / 2,
                                        this.camera.view.height / 2,
