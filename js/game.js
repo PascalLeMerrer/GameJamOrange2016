@@ -4,6 +4,8 @@ Jumpup.Game = function () {
 
     this.keys = null;
 
+    this.emitter = null;
+
     // Ground sprite
     this.ground = null;
 
@@ -26,6 +28,8 @@ Jumpup.Game.prototype = {
     // Assets loading - do not use asssets here
     preload: function() {
         this.load.image("key", "assets/key.png")
+        this.load.image("dialog", "assets/dialog.png")
+        this.load.image("explosion", "assets/Explosion.png")
     },
 
     init: function(context) {
@@ -75,6 +79,10 @@ Jumpup.Game.prototype = {
         this.ground.body.immovable = true
 
         this.initKeyboard();
+
+        // Particle effect
+        this.emitter = game.add.emitter(0, 0, 100);
+        this.emitter.makeParticles('explosion');
     },
 
     initKeyboard: function() {
@@ -85,15 +93,17 @@ Jumpup.Game.prototype = {
         this.sound.play('key');
         keyCount = this.keys.children.length;
         for (var i = 0; i < keyCount; i++) {
-            var key = this.keys.children[i];
-            if (key.key.alive &&
-                (key.key.keyLetter.toLowerCase() === char.toLowerCase())) {
-                var level = 5 - Math.round((key.y / this.playgroundHeight) * 5)
+            var keySprite = this.keys.children[i];
+            if (keySprite.key.alive &&
+                (keySprite.key.keyLetter.toLowerCase() === char.toLowerCase())) {
+                var level = 5 - Math.round((keySprite.y / this.playgroundHeight) * 5)
                 points = level * 10;
                 this.context.score += points;
                 this.scoreText.setText(this.context.score);
-                this.displaySuccessMessage(key.x, key.y, level)
-                key.kill();
+                this.displaySuccessMessage(keySprite.x, keySprite.y, level)
+                keySprite.kill();
+                // this.keys.remove(keySprite);
+                keySprite = null;
                 this.average *= 0.7;
                 this.average += level * 0.3;
                 this.gravity = 4 + 10 * this.average;
@@ -125,43 +135,63 @@ Jumpup.Game.prototype = {
             return true;
         }, null, this);
 
+        var emitter = this.emitter;
+        emitter.forEachAlive(function(p){
+            if(emitter.lifespan && emitter.alive){
+                p.alpha = p.lifespan / emitter.lifespan;
+            }
+        });
     },
 
     end: function() {
         this.state.start('LevelFinished', true, false, this.context);
     },
 
-    displaySuccessMessage: function(x, y, level) {
-        var style = {
-            font: "32px Arial",
-            fill: "#ff6600",
-            align: "center"
-        };
+
+    displaySuccessMessage: function(x, y, level){
         var messageTxt = "Ok";
-        switch (level) {
-            case 0:
+        switch(level){
+            case 1:
                 messageTxt = "Ok";
                 break;
-            case 1:
+            case 2:
                 messageTxt = "Bien joué";
                 break;
-            case 2:
+            case 3:
                 messageTxt = "Super";
                 break;
-            case 3:
+            case 4:
                 messageTxt = "Excellent";
                 break;
-            case 4:
+            case 5:
                 messageTxt = "Génialissime";
                 break;
         }
-        var message = this.add.text(x, y, messageTxt, style)
-        if (message.x + message.width > gameConfig.width) {
-            message.x = gameConfig.width - message.width;
+
+        var popup = this.add.sprite(x, y, "dialog");
+        if (popup.x + popup.width > gameConfig.width) {
+            popup.x = gameConfig.width - popup.width;
         }
-        var fadeTween = this.game.add.tween(message).to({ alpha: 0 }, 1500, null, true);
-        fadeTween.onCompleteCallback = function() {
-            message.kill();
+
+        var style = {
+            font: "25px Arial", fill: "#ffffff",
+            wordWrap: true, wordWrapWidth: popup.width,
+            align: "center",
+        };
+
+        var text = this.make.text(popup.width / 2, popup.height / 2, messageTxt, style);
+        text.anchor.set(0.5);
+
+        var message = popup.addChild(text);
+
+        var fadeTween = this.game.add.tween(popup).to( { alpha: 0 }, 1500, null, true);
+        this.emitter.x = x;
+        this.emitter.y = y;
+        this.emitter.start(true, 1000, null, 25);
+
+        var fadeTween = this.game.add.tween(message).to( { alpha: 0 }, 1500, null, true);
+        fadeTween.onCompleteCallback = function(){
+            popup.kill();
         }
     }
 };
@@ -172,32 +202,35 @@ function getDelay() {
 
 
 function freeSpaceCheck(game, x) {
-    var bounder1 = new Phaser.Rectangle(x, gameConfig.spawnY, gameConfig.keysize, gameConfig.keysize);
-    for (var i = 0; i < game.keys.children.length; i++) {
-        var key = game.keys.children[i];
-        var bounder2 = new Phaser.Rectangle(key.x, key.y, gameConfig.keysize, gameConfig.keysize)
-        if (Phaser.Rectangle.intersects(bounder1, bounder2)) return false;
+  var bounder1 = new Phaser.Rectangle(x, gameConfig.spawnY, gameConfig.keysize, gameConfig.keysize);
+  for (var i = 0; i < game.keys.children.length;  i++ ) {
+    var key = game.keys.children[i];
+    if (key.alive) {
+      var bounder2 = new Phaser.Rectangle(key.x, key.y, gameConfig.keysize, gameConfig.keysize)
+      if (Phaser.Rectangle.intersects(bounder1, bounder2) ) return false;
     }
-    return true;
+  }
+  return true;
 }
 
 function addKeySprite(game) {
-    var rand = function(upto) {
-        return game.rnd.integerInRange(0, upto - 1);
-    }
-    var randx = rand(gameConfig.width - gameConfig.keysize);
-    var secu = 100
-    while (!freeSpaceCheck(game, randx) && secu > 0) {
-        randx = rand(gameConfig.width - gameConfig.keysize);
-        secu--;
-    }
-    if (secu > 0) {
-        var keys = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        var randCharIndex = rand(keys.length);
-        var randChar = keys[randCharIndex]
-        var key = new Key(game, randx, gameConfig.spawnY, randChar);
-        game.keys.add(key.sprite);
-    }
+   var rand = function(upto) { return game.rnd.integerInRange(0, upto-1); }
+   var randx = rand(gameConfig.width-gameConfig.keysize);
+
+   var secu=100
+   while(! freeSpaceCheck(game,randx) && secu > 0) {
+     randx = rand(gameConfig.width-gameConfig.keysize);
+     secu--;
+   }
+   if (secu > 0)  {
+     var keys="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+     var randCharIndex = rand(keys.length);
+     var randChar = keys[randCharIndex]
+     var key = new Key(game, randx, gameConfig.spawnY, randChar);
+     game.keys.add(key.sprite);
+   } else {
+     this.state.start('LevelFinished', true, false, this.context);
+   }
 }
 
 function Key(game, x, y, keyLetter) {
@@ -220,7 +253,7 @@ function Key(game, x, y, keyLetter) {
         wordWrapWidth: this.sprite.width,
         align: "center"
     };
-    this.letterText = this.sprite.addChild(game.make.text(30, 25, keyLetter, style));
+    this.letterText = this.sprite.addChild(game.make.text(this.sprite.width/2, this.sprite.height/2, keyLetter, style));
     this.letterText.anchor.set(0.5);
 
     // Background physics body
@@ -234,6 +267,9 @@ function Key(game, x, y, keyLetter) {
 Key.prototype.grounded = function() {
     if (this.alive) {
         this.alive = false;
-        this.game.add.tween(this.letterText).to({ alpha: 0 }, 1000, null, true);
+        this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
+        this.sprite.body.immovable = true;
+    } else if(this.sprite.body.moves){
+        this.sprite.body.moves = false;
     }
 }
