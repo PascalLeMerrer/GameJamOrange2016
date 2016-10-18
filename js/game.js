@@ -76,11 +76,13 @@ Jumpup.Game.prototype = {
     update: function () {
 
         game.physics.arcade.collide(this.keys, this.keys, function(key1, key2){
+            //key1.key.grounded();
+            //key2.key.grounded();
            return true;
         }, null, this);
 
-        game.physics.arcade.collide(this.keys, this.ground, function(key1, ground){
-
+        game.physics.arcade.collide(this.keys, this.ground, function(ground, key){
+            key.key.grounded();
             return true;
         }, null, this);
 
@@ -95,7 +97,8 @@ Jumpup.Game.prototype = {
 
 
 function Key(game, x, y, keyLetter){
-    var keyLetter = keyLetter;
+
+    this.keyLetter = keyLetter;
 
     // Background sprite
     this.sprite = game.add.sprite(x, y, 'key');
@@ -118,9 +121,8 @@ function Key(game, x, y, keyLetter){
     this.sprite.body.gravity.y = 100;
     this.sprite.body.collideWorldBounds = true;
     this.sprite.body.setSize(44, 44, 3, 3)
-
 } 
 
 Key.prototype.grounded = function(){
-    console.log("Letter "+this.keyLetter+" has hit the bottom");
+    // console.log("Letter "+this.keyLetter+" has hit the bottom");
 }
