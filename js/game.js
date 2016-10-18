@@ -193,8 +193,10 @@ function freeSpaceCheck(game, x) {
   var bounder1 = new Phaser.Rectangle(x, gameConfig.spawnY, gameConfig.keysize, gameConfig.keysize);
   for (var i = 0; i < game.keys.children.length;  i++ ) {
     var key = game.keys.children[i];
-    var bounder2 = new Phaser.Rectangle(key.x, key.y, gameConfig.keysize, gameConfig.keysize)    
-    if (Phaser.Rectangle.intersects(bounder1, bounder2) ) return false;
+    if (key.alive) {
+      var bounder2 = new Phaser.Rectangle(key.x, key.y, gameConfig.keysize, gameConfig.keysize)    
+      if (Phaser.Rectangle.intersects(bounder1, bounder2) ) return false;
+    }
   }
   return true;
 }
@@ -214,6 +216,8 @@ function addKeySprite(game) {
      var randChar = keys[randCharIndex]
      var key = new Key(game, randx, gameConfig.spawnY, randChar);
      game.keys.add(key.sprite);
+   } else {
+     console.log("WARNING ! NO MORE SPACE AVAILABLE")
    }
 }
 
