@@ -84,12 +84,14 @@ Jumpup.Game.prototype = {
 
     update: function () {
 
+        // Collision between keys
         game.physics.arcade.collide(this.keys, this.keys, function(key1, key2){
-            //key1.key.grounded();
-            //key2.key.grounded();
+            key1.key.grounded();
+            key2.key.grounded();
            return true;
         }, null, this);
 
+        // Collision between key and ground
         game.physics.arcade.collide(this.keys, this.ground, function(ground, key){
             key.key.grounded();
             return true;
@@ -107,7 +109,7 @@ Jumpup.Game.prototype = {
 
 
 function Key(game, x, y, keyLetter){
-
+    this.game = game;
     this.keyLetter = keyLetter;
 
     // Background sprite
@@ -117,14 +119,16 @@ function Key(game, x, y, keyLetter){
 
     this.sprite.key = this;
 
+    this.outOfGame = false;
+
     // Letter
     var style = {
         font: "32px Arial", fill: "#ff6600",
         wordWrap: true, wordWrapWidth: this.sprite.width,
         align: "center"
     };
-    var letterText = this.sprite.addChild(game.make.text(30, 25, keyLetter, style));
-    letterText.anchor.set(0.5);
+    this.letterText = this.sprite.addChild(game.make.text(30, 25, keyLetter, style));
+    this.letterText.anchor.set(0.5);
 
     // Background physics body
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
@@ -134,5 +138,9 @@ function Key(game, x, y, keyLetter){
 }
 
 Key.prototype.grounded = function(){
-    // console.log("Letter "+this.keyLetter+" has hit the bottom");
+    if(!this.outOfGame){
+        this.outOfGame = true;
+        console.log("Letter "+this.keyLetter+" has hit the bottom");
+        this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
+    }
 }
