@@ -46,7 +46,7 @@ Jumpup.Game.prototype = {
 
         var style = { fill: "#ffffff", align: "center", fontSize: 32 };
 
-        this.scoreText = this.createText(20, 80, this.context.score || '000', style);
+        this.scoreText = this.createText(20, 20, this.context.score || '000', style);
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
 
