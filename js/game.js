@@ -254,5 +254,8 @@ Key.prototype.grounded = function(){
     if(this.alive){
         this.alive = false;
         this.game.add.tween(this.letterText).to( { alpha: 0 }, 1000, null, true);
+        this.sprite.body.immovable = true;
+    }else if(this.sprite.body.moves){        
+        this.sprite.body.moves = false;
     }
 }
