@@ -55,10 +55,10 @@ Jumpup.Game.prototype = {
         this.keys.physicsBodyType = Phaser.Physics.ARCADE;
 
         var game=this
-        function arm(delay) {
-          game.time.events.add(delay, function() { addKeySprite(game) ; arm(delay)}, game);
+        function arm() {
+          game.time.events.add(getDelay(), function() { addKeySprite(game) ; arm()}, game);
         }
-        arm(500)
+        arm()
 
         // Ground
         this.ground = this.add.sprite(0, this.playgroundHeight, "");
@@ -149,6 +149,11 @@ Jumpup.Game.prototype = {
 
 };
 
+function getDelay() {
+  return 1500;
+}
+
+
 function freeSpaceCheck(game, x) {
   var bounder1 = new Phaser.Rectangle(x, gameConfig.spawnY, gameConfig.keysize, gameConfig.keysize);
   for (var i = 0; i < game.keys.children.length;  i++ ) {
@@ -162,13 +167,19 @@ function freeSpaceCheck(game, x) {
 function addKeySprite(game) {
    var rand = function(upto) { return game.rnd.integerInRange(0, upto-1); }
    var randx = rand(gameConfig.width-gameConfig.keysize);
-   while(! freeSpaceCheck(game,randx)) randx = rand(gameConfig.width-gameConfig.keysize);
    
-   var keys="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-   var randCharIndex = rand(keys.length);
-   var randChar = keys[randCharIndex]
-   var key = new Key(game, randx, gameConfig.spawnY, randChar);
-   game.keys.add(key.sprite);
+   var secu=100
+   while(! freeSpaceCheck(game,randx) && secu > 0) {
+     randx = rand(gameConfig.width-gameConfig.keysize);
+     secu--;
+   }
+   if (secu > 0)  {
+     var keys="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+     var randCharIndex = rand(keys.length);
+     var randChar = keys[randCharIndex]
+     var key = new Key(game, randx, gameConfig.spawnY, randChar);
+     game.keys.add(key.sprite);
+   }
 }
 
 function Key(game, x, y, keyLetter){
