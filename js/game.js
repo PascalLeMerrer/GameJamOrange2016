@@ -85,7 +85,7 @@ Jumpup.Game.prototype = {
     onPress: function(char) {
         this.sound.play('key');
         this.keys.forEachAlive(function(key) {
-            if(key.key.keyLetter.toLowerCase() === char.toLowerCase()) {
+            if(key.key.keyLetter.toLowerCase() === char.toLowerCase() && key.key.alive) {
                 var level = 5 - Math.floor((key.y / this.playgroundHeight) * 5)
                 //console.log("level="+level+" char="+key.key.keyLetter+" height="+this.playgroundHeight+" key.y="+key.y)
                 points = level * 10;
