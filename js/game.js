@@ -4,6 +4,9 @@ Jumpup.Game = function () {
 
     this.keys = null;
 
+    // Ground sprite
+    this.ground = null;
+
     this.context = null;
     this.scoreText = null;
 };
@@ -38,16 +41,24 @@ Jumpup.Game.prototype = {
 
         this.scoreText = this.createText(20, 20, this.context.score || '000', style);
 
+        this.physics.startSystem(Phaser.Physics.ARCADE);
+
         this.keys = this.add.group();
         this.keys.enableBody = true;
         this.keys.physicsBodyType = Phaser.Physics.ARCADE;
 
-        // Sample key
+       // Sample key
         var k = new Key(this, 110, 10, "k");
         var b = new Key(this, 140, 70, "b");
 
         this.keys.add(k.sprite);
         this.keys.add(b.sprite);
+
+        // Ground
+        this.ground = this.add.sprite(0, 518, "");
+        this.ground.width = 800;
+        this.physics.enable(this.ground, Phaser.Physics.ARCADE);
+        this.ground.body.immovable = true
 
         this.initKeyboard();
     },
@@ -74,6 +85,11 @@ Jumpup.Game.prototype = {
     update: function () {
 
         game.physics.arcade.collide(this.keys, this.keys, function(key1, key2){
+           return true;
+        }, null, this);
+
+        game.physics.arcade.collide(this.keys, this.ground, function(key1, ground){
+
             return true;
         }, null, this);
 
@@ -90,10 +106,13 @@ Jumpup.Game.prototype = {
 
 function Key(game, x, y, keyLetter){
     var keyLetter = keyLetter;
-    // background sprite
+
+    // Background sprite
     this.sprite = game.add.sprite(x, y, 'key');
     this.sprite.width = 50;
     this.sprite.height = 50;
+
+    this.sprite.key = this;
 
     // Letter
     var style = {
@@ -105,10 +124,13 @@ function Key(game, x, y, keyLetter){
     letterText.anchor.set(0.5);
 
     // Background physics body
-    game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.gravity.y = 100;
     this.sprite.body.collideWorldBounds = true;
     this.sprite.body.setSize(44, 44, 3, 3)
 
+}
+
+Key.prototype.grounded = function(){
+    console.log("Letter "+this.keyLetter+" has hit the bottom");
 }
