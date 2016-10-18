@@ -25,25 +25,23 @@ Jumpup.Game.prototype = {
 
         this.world.resize(800, 600);
 
+
         this.physics.startSystem(Phaser.Physics.ARCADE);
 
         this.physics.arcade.gravity.y = 750;
         this.physics.arcade.skipQuadTree = false;
-
-
-
     },
 
     create: function () {
         // this.physics.arcade.enable(this.player);
 
         this.background = this.add.tileSprite(0, 0, 800, 600, 'background');
+
         var style = { fill: "#ffffff", align: "center", fontSize: 32 };
 
         this.scoreText = this.createText(20, 20, this.context.score || '000', style);
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
-
 
         this.keys = this.add.group();
         this.keys.enableBody = true;
@@ -61,6 +59,17 @@ Jumpup.Game.prototype = {
         this.ground.width = 800;
         this.physics.enable(this.ground, Phaser.Physics.ARCADE);
         this.ground.body.immovable = true
+
+        this.initKeyboard();
+    },
+
+    initKeyboard: function() {
+        game.input.keyboard.addCallbacks(this, null, null, this.onPress);
+    },
+
+    onPress: function(char) {
+        this.sound.play('key');
+        console.log(char);
     },
 
     createText: function(x, y, text, style, size)
@@ -87,6 +96,7 @@ Jumpup.Game.prototype = {
         }, null, this);
 
 
+
     },
 
     end: function(){
@@ -106,22 +116,22 @@ function Key(game, x, y, keyLetter){
     this.sprite.height = 50;
 
     this.sprite.key = this;
-    
+
     // Letter
-    var style = { 
-        font: "32px Arial", fill: "#ff6600", 
-        wordWrap: true, wordWrapWidth: this.sprite.width, 
+    var style = {
+        font: "32px Arial", fill: "#ff6600",
+        wordWrap: true, wordWrapWidth: this.sprite.width,
         align: "center"
     };
     var letterText = this.sprite.addChild(game.make.text(30, 25, keyLetter, style));
     letterText.anchor.set(0.5);
-    
+
     // Background physics body
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.gravity.y = 100;
     this.sprite.body.collideWorldBounds = true;
     this.sprite.body.setSize(44, 44, 3, 3)
-} 
+}
 
 Key.prototype.grounded = function(){
     // console.log("Letter "+this.keyLetter+" has hit the bottom");
