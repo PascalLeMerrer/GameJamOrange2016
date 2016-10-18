@@ -75,10 +75,14 @@ Jumpup.Game.prototype = {
         this.sound.play('key');
         this.keys.forEachAlive(function(key) {
             if(key.key.keyLetter.toLowerCase() === char.toLowerCase()) {
-                points = 50 - Math.round((key.y / this.playgroundHeight) * 5) * 10;
+                var level = 5 - Math.round((key.y / this.playgroundHeight) * 5)
+                points = level * 10;
                 this.context.score += points;
                 this.scoreText.setText(this.context.score);
+                this.displaySuccessMessage(key.x, key.y, level)
                 key.kill();
+
+
             }
         }, this)
     },
@@ -138,6 +142,9 @@ Jumpup.Game.prototype = {
                 break;
         }
         var message = this.add.text(x, y, messageTxt, style)
+        if (message.x + message.width > gameConfig.width) {
+            message.x = gameConfig.width - message.width;
+        }
         var fadeTween = this.game.add.tween(message).to( { alpha: 0 }, 1500, null, true);
         fadeTween.onCompleteCallback = function(){
             message.kill();
