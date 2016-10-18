@@ -53,9 +53,12 @@ Jumpup.Game.prototype = {
         this.keys.enableBody = true;
         this.keys.physicsBodyType = Phaser.Physics.ARCADE;
 
-       addKeySprite(this);
-       addKeySprite(this);
-       addKeySprite(this);
+        var game=this
+        function arm(delay) {
+          game.time.events.add(delay, function() { addKeySprite(game) ; arm(delay)}, game);
+        }
+        arm(500)
+        
 
         // Ground
         this.ground = this.add.sprite(0, 518, "");
