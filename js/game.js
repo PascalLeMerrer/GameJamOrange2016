@@ -239,7 +239,7 @@ function Key(game, x, y, keyLetter){
         wordWrap: true, wordWrapWidth: this.sprite.width,
         align: "center"
     };
-    this.letterText = this.sprite.addChild(game.make.text(30, 25, keyLetter, style));
+    this.letterText = this.sprite.addChild(game.make.text(this.sprite.width / 2, this.sprite.height / 2, keyLetter, style));
     this.letterText.anchor.set(0.5);
 
     // Background physics body
