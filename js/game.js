@@ -14,7 +14,8 @@ Jumpup.Game = function () {
 var gameConfig = {
   width: 800,
   height: 600,
-  keysize: 50
+  keysize: 50,
+  spawnY: 10
 }
 
 Jumpup.Game.prototype = {
@@ -107,12 +108,25 @@ Jumpup.Game.prototype = {
 
 };
 
+function freeSpaceCheck(game, x) {
+  var bounder1 = new Phaser.Rectangle(x, gameConfig.spawnY, gameConfig.keysize, gameConfig.keysize);
+  for (var i = 0; i < game.keys.children.length;  i++ ) {
+    var key = game.keys.children[i];
+    var bounder2 = new Phaser.Rectangle(key.x, key.y, gameConfig.keysize, gameConfig.keysize)    
+    if (Phaser.Rectangle.intersects(bounder1, bounder2) ) return false;
+  }
+  return true;
+}
+
 function addKeySprite(game) {
    var rand = function(upto) { return game.rnd.integerInRange(0, upto-1); }
    var randx = rand(gameConfig.width-gameConfig.keysize);
+   while(! freeSpaceCheck(game,randx)) randx = rand(gameConfig.width-gameConfig.keysize);
+   
    var keys="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-   var randc = rand(keys.length);
-   var key = new Key(game, randx, 10, keys[randc]);
+   var randCharIndex = rand(keys.length);
+   var randChar = keys[randCharIndex]
+   var key = new Key(game, randx, gameConfig.spawnY, randChar);
    game.keys.add(key.sprite);
 }
 
