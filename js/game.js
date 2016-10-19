@@ -50,7 +50,7 @@ Jumpup.Game.prototype = {
 
         this.background = this.add.tileSprite(0, 0, gameConfig.width, gameConfig.height, 'background');
 
-        var style = { fill: "#ffffff", align: "center", fontSize: 32 };
+        var style = { fill: "#3B8C22", align: "center", fontSize: 32 };
 
         this.scoreText = this.createText(20, 20, this.context.score || '000', style);
 
