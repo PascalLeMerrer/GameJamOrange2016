@@ -250,7 +250,7 @@ function Key(game, x, y, keyLetter) {
     // Letter
     var style = {
         font: "32px Arial",
-        fill: "#ff6600",
+        fill: "#3B8C22",
         wordWrap: true,
         wordWrapWidth: this.sprite.width,
         align: "center"
