@@ -21,21 +21,25 @@ Jumpup.MainMenu.prototype = {
 
         this.background = this.add.tileSprite(0, 0, 800, 600, 'background');
 
-        this.startText = this.createText(this.camera.view.width / 2,
-                                       this.camera.view.height / 2,
-                                       60);
-
         this.instructions = this.createText(this.camera.view.width / 2,
-                                            this.camera.view.height * 0.5,
-                                            45);
+                                            200,
+                                            25);
 
-        this.startText.setText('');
-        this.instructions.setText("Appuyer sur entrée\npour commencer");
+        this.instructions.setText("Vous dever détruire les lettres qui tombent\n" +
+                                  "avant qu'elles ne touchent le sol.\n" +
+                                  "Pressez la touche correspondante\n" +
+                                  "du clavier pour détruire une lettre.");
+
+        this.startText = this.createText(this.camera.view.width / 2,
+                                       450,
+                                       40   );
+        this.startText.setText('Appuyer sur entrée\npour commencer');
+
 
     },
 
     createText: function (x, y, fontSize) {
-        var style = { fill: "#65CE40", align: "center" };
+        var style = { fill: "#3B8C22", align: "center" };
         var text = this.add.text(x, y, '', style);
         text.font = "Roboto Slab";
         text.fontSize = fontSize;
