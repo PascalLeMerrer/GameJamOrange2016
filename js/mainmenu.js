@@ -25,7 +25,7 @@ Jumpup.MainMenu.prototype = {
                                             200,
                                             25);
 
-        this.instructions.setText("Vous dever détruire les lettres qui tombent\n" +
+        this.instructions.setText("Vous devez détruire les lettres qui tombent\n" +
                                   "avant qu'elles ne touchent le sol.\n" +
                                   "Pressez la touche correspondante\n" +
                                   "du clavier pour détruire une lettre.");
