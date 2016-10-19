@@ -28,26 +28,12 @@ Jumpup.LevelFinished.prototype = {
                                             this.camera.view.height * 0.75,
                                             45);
 
-        if (this.context.isGameOver)
-        {
-            this.endText.setText("Game Over\nFinal score: " + this.context.score);
-            this.instructions.setText("Press Enter to restart");
-        }
-        else if (this.context.isGameFinished)
-        {
-            this.endText.setText("The End\nFinal score: " + this.context.score);
-            this.instructions.setText("Press Enter to restart");
-        }
-        else
-        {
-            this.endText.setText("Level " + this.context.level + "\nscore: " + this.context.score);
-            this.instructions.setText("Press Enter to start");
-        }
-
+        this.endText.setText("Score Final : " + this.context.score);
+        this.instructions.setText("Appuyez sur entrée\npour recommencer");
     },
 
     createText: function (x, y, fontSize) {
-        var style = { fill: "#ffffff", align: "center" };
+        var style = { fill: "#3B8C22", align: "center" };
         var text = this.add.text(x, y, '', style);
         text.font = "Roboto Slab";
         text.fontSize = fontSize;
@@ -61,16 +47,10 @@ Jumpup.LevelFinished.prototype = {
     update: function () {
         if (this.input.keyboard.isDown(Phaser.Keyboard.ENTER))
         {
-            if(this.context.isGameOver) {
-                this.context.score = 0;
-                this.context.level = 1;
-                this.context.isGameOver = false;
-                this.state.start('Game', true, false, this.context);
-            }
-            else
-            {
-                this.state.start('Game', true, false, this.context);
-            }
+            this.context.score = 0;
+            this.context.level = 1;
+            this.context.isGameOver = false;
+            this.state.start('Game', true, false, this.context);
         }
     }
 };

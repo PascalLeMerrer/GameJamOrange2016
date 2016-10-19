@@ -15,6 +15,10 @@ Jumpup.Game = function () {
     this.average = 0;
 
     this.gravity = 5;
+
+    this.gameTimer =  null;
+
+    this.gameDuration = 60; // in seconds
 };
 
 var gameConfig = {
@@ -83,6 +87,11 @@ Jumpup.Game.prototype = {
         // Particle effect
         this.emitter = game.add.emitter(0, 0, 100);
         this.emitter.makeParticles('explosion');
+
+        this.gameTimer = this.time.create(false);
+
+        this.gameTimer.add(1000 * this.gameDuration, this.endGame, this);
+        this.gameTimer.start();
     },
 
     initKeyboard: function() {
@@ -145,7 +154,7 @@ Jumpup.Game.prototype = {
         });
     },
 
-    end: function() {
+    endGame: function() {
         this.state.start('LevelFinished', true, false, this.context);
     },
 
