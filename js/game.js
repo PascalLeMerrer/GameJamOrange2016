@@ -107,8 +107,8 @@ Jumpup.Game.prototype = {
                 this.scoreText.setText(this.context.score);
                 this.displaySuccessMessage(keySprite.x, keySprite.y, level)
                 keySprite.kill();
-                this.keys.remove(keySprite);
-                keySprite = null;
+                keySprite.key = null;
+                this.keys.remove(keySprite, true);
                 this.average *= 0.7;
                 this.average += level * 0.3;
                 this.gravity = 4 + 10 * this.average;
