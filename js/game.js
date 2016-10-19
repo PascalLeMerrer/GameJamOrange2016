@@ -29,12 +29,6 @@ var gameConfig = {
 }
 
 Jumpup.Game.prototype = {
-    // Assets loading - do not use asssets here
-    preload: function() {
-        this.load.image("key", "assets/key.png")
-        this.load.image("dialog", "assets/dialog.png")
-        this.load.image("explosion", "assets/Explosion.png")
-    },
 
     init: function(context) {
 
