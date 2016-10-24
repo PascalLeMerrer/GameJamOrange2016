@@ -1,7 +1,8 @@
 var Jumpup = Jumpup || {};
 
 Jumpup.LevelFinished = function () {
-    this.endText = null;
+    this.scoreText = null;
+    this.highScoreText = null;
     this.instructions = null;
     this.context = null;
     this.sky = null;
@@ -11,6 +12,10 @@ Jumpup.LevelFinished.prototype = {
 
     init: function(context) {
         this.context = context;
+        if(this.context.highScore === undefined
+           || this.context.highScore < this.context.score) {
+            this.context.highScore = this.context.score;
+        }
     },
 
     preload: function () {
@@ -20,19 +25,26 @@ Jumpup.LevelFinished.prototype = {
 
         this.sky = this.add.tileSprite(0, 0, 800, 600, 'background');
 
-        this.endText = this.createText(this.camera.view.width / 2,
-                                       this.camera.view.height / 2,
-                                       60);
+        var xCenter = this.camera.view.width / 2;
+        var yCenter = this.camera.view.height / 2;
 
-        this.instructions = this.createText(this.camera.view.width / 2,
-                                            this.camera.view.height * 0.75,
-                                            45);
+        this.scoreText = this.createText(xCenter,
+                                       yCenter * 0.75,
+                                       60,
+                                       "Votre score  : " + this.context.score);
 
-        this.endText.setText("Score Final : " + this.context.score);
-        this.instructions.setText("Appuyez sur entrée\npour recommencer");
+        this.scoreText = this.createText(xCenter,
+                                         yCenter,
+                                         60,
+                                         "Meilleur score  : " + this.context.highScore);
+
+        this.instructions = this.createText(xCenter,
+                                            yCenter * 1.5,
+                                            45,
+                                            "Appuyez sur entrée\npour recommencer");
     },
 
-    createText: function (x, y, fontSize) {
+    createText: function (x, y, fontSize, content) {
         var style = { fill: "#3B8C22", align: "center" };
         var text = this.add.text(x, y, '', style);
         text.font = "Roboto Slab";
@@ -41,6 +53,7 @@ Jumpup.LevelFinished.prototype = {
         text.anchor.y = 0.5;
         text.align = 'center';
         text.fixedToCamera = true;
+        text.setText(content);
         return text;
     },
 
