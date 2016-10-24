@@ -93,13 +93,12 @@ Jumpup.Game.prototype = {
     },
 
     onDown: function(keyboardEvent) {
-        console.log(keyboardEvent);
         var char = keyboardEvent.key;
         this.sound.play('key');
         keyCount = this.keys.children.length;
         for (var i = 0; i < keyCount; i++) {
             var keySprite = this.keys.children[i];
-            if (keySprite.key.alive &&
+            if (keySprite && keySprite.key.alive &&
                 (keySprite.key.keyLetter.toLowerCase() === char)) {
                 var level = 5 - Math.round((keySprite.y / this.playgroundHeight) * 5)
                 points = level * 10;
